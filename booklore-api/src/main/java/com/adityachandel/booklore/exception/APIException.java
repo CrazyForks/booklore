@@ -3,16 +3,18 @@ package com.adityachandel.booklore.exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Custom exception for API errors with HTTP status.
+ */
 @Getter
 public class APIException extends RuntimeException {
+
     private final HttpStatus status;
     private final String message;
 
-    public APIException(String formattedMessage, HttpStatus status) {
-        super(formattedMessage);
+    public APIException(String message, HttpStatus status) {
+        super(message);
         this.status = status;
-        this.message = formattedMessage;
+        this.message = message;
     }
 }
-
-

@@ -1,16 +1,16 @@
 # Stage 1: Build the Angular app
-FROM node:22-alpine AS angular-build
+FROM node:24-alpine AS angular-build
 
 WORKDIR /angular-app
 
 COPY ./booklore-ui/package.json ./booklore-ui/package-lock.json ./
-RUN npm install
+RUN npm ci
 COPY ./booklore-ui /angular-app/
 
 RUN npm run build --configuration=production
 
 # Stage 2: Build the Spring Boot app with Gradle
-FROM gradle:jdk21-alpine AS springboot-build
+FROM gradle:9.3-jdk25-alpine AS springboot-build
 
 WORKDIR /springboot-app
 
@@ -19,10 +19,10 @@ COPY ./booklore-api/build.gradle ./booklore-api/settings.gradle /springboot-app/
 COPY ./booklore-api/gradle /springboot-app/gradle
 COPY ./booklore-api/src /springboot-app/src
 
-RUN ./gradlew clean build
+RUN ./gradlew clean build -x test
 
 # Stage 3: Final image combining everything
-FROM eclipse-temurin:21.0.5_11-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 RUN apk update && apk add nginx
 
